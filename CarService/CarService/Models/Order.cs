@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarService.Models;
 
@@ -9,7 +10,7 @@ public partial class Order
 
     public int? ProductId { get; set; }
 
-    public Guid MasterId { get; set; }
+    public string MasterId { get; set; }
 
     public int ClientId { get; set; }
 
@@ -17,7 +18,9 @@ public partial class Order
 
     public DateOnly? EndDate { get; set; }
 
-    public decimal? Price { get; set; }
+    [Required(ErrorMessage = "Пожалуйста, введите цену!")]
+    [Range(5, 10000, ErrorMessage = "Цена должна быть в диапазоне от 5 до 10000")]
+    public decimal Price { get; set; }
 
     public virtual Client Client { get; set; } = null!;
 

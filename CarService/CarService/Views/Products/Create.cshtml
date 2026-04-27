@@ -9,49 +9,85 @@
 <h4>Product</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="SerialNumber" class="control-label"></label>
-                <input asp-for="SerialNumber" class="form-control" />
-                <span asp-validation-for="SerialNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReleaseYear" class="control-label"></label>
-                <input asp-for="ReleaseYear" class="form-control" />
-                <span asp-validation-for="ReleaseYear" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Brand" class="control-label"></label>
-                <input asp-for="Brand" class="form-control" />
-                <span asp-validation-for="Brand" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Model" class="control-label"></label>
-                <input asp-for="Model" class="form-control" />
-                <span asp-validation-for="Model" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+    @using (Html.BeginForm("Create", "Products", FormMethod.Post, new { id = "productForm" }))
+    {
+        @Html.ValidationSummary(false, "Please fix the following errors!")
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.CategoryId)
+            @Html.DropDownListFor(m => m.CategoryId, (SelectList)ViewBag.CategoryId, "Select category", new { @class = "form-control", id="categoryId" })
+            @Html.ValidationMessageFor(m => m.CategoryId)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.SerialNumber)
+            @Html.TextBoxFor(m => m.SerialNumber, new { @class = "form-control", id = "serialNumber", placeholder = "111111" })
+            @Html.ValidationMessageFor(m => m.SerialNumber)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Price)
+            @Html.TextBoxFor(m => m.Price, new { @class = "form-control", id = "price", placeholder = "2707.0" })
+            @Html.ValidationMessageFor(m => m.Price)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ReleaseYear)
+            @Html.TextBoxFor(m => m.ReleaseYear, new { @class = "form-control", id = "releaseYear", placeholder = "1997" })
+            @Html.ValidationMessageFor(m => m.ReleaseYear)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Brand)
+            @Html.TextBoxFor(m => m.Brand, new { @class = "form-control", id = "brand", placeholder = "Michelin" })
+            @Html.ValidationMessageFor(m => m.Brand)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Model)
+            @Html.TextBoxFor(m => m.Model, new { @class = "form-control", id = "model", placeholder = "Pilot Sport" })
+            @Html.ValidationMessageFor(m => m.Model)
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" id="create"/>
+        </div>
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    }
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>
+    $('#create').click(function (e) {
+        e.preventDefault();
+
+        let jsonData = JSON.stringify({'categoryId': $('#categoryId').val(), 'serialNumber': $('#serialNumber').val(), 'price': $('#price').val().replace(',','.'), 'releaseYear': $('#releaseYear').val(), 'brand': $('#brand').val(), 'model': $('#model').val()});
+
+        $.ajax({
+            url: '/Products/ValidateProduct',
+            method: 'post',
+            dataType: 'JSON',
+            contentType: 'application/json',
+            cache: false,
+            processData: false,
+            data: jsonData,
+            success: function (data) {
+                if(data.success == true){ $('#productForm').submit(); }
+                else{
+                    let errors = data.errors;
+                    for(let key in errors){
+                        let span = $(`[data-valmsg-for="${key}"]`)
+                        span.text(errors[key]);
+                    }
+                }
+            }
+        })
+    });
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
 }

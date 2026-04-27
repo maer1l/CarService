@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CarService.Data;
+using CarService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CarService.Data;
-using CarService.Models;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CarService.Controllers
 {
@@ -48,7 +50,7 @@ namespace CarService.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName"); // второй параметр это отображаемое значение
             return View();
         }
 
@@ -65,7 +67,7 @@ namespace CarService.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", product.CategoryId);
             return View(product);
         }
 
@@ -82,7 +84,7 @@ namespace CarService.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", product.CategoryId);
             return View(product);
         }
 
@@ -93,6 +95,12 @@ namespace CarService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProductId,CategoryId,SerialNumber,Price,ReleaseYear,Brand,Model")] Product product)
         {
+            decimal price = 0;
+            if (decimal.TryParse(product.Price.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out price))
+            {
+                product.Price = price;
+            }
+
             if (id != product.ProductId)
             {
                 return NotFound();
@@ -159,6 +167,33 @@ namespace CarService.Controllers
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
+        }
+
+        [HttpPost]
+        public ActionResult ValidateProduct(Product product)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    return Json(new { success = true}); // ajax в require
+                }
+                else
+                {
+                    Dictionary<string, string> errorsDictionary = new Dictionary<string, string>();
+
+                    foreach (var errors in ModelState)
+                    {
+                        errorsDictionary.Add(errors.Key, errors.Value.Errors[0].ErrorMessage);
+                    }
+
+                    return Json(new { success = false, errors = errorsDictionary });
+                }
+            }
+            catch
+            {
+                return Json(new { success = false, errors = new Dictionary<string, string>() });
+            }
         }
     }
 }
