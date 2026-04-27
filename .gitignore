@@ -56,3 +56,4 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 /CarService/.vs/CarService.slnx
+/CarService/.vs/ProjectEvaluation
