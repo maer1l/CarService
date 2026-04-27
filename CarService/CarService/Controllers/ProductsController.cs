@@ -3,6 +3,7 @@ using CarService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -194,6 +195,39 @@ namespace CarService.Controllers
             {
                 return Json(new { success = false, errors = new Dictionary<string, string>() });
             }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SearchProduct(string word)
+        {
+            IEnumerable<Product> filteredProducts = null;
+            if (!word.IsNullOrEmpty())
+            {
+                word = word.Trim();
+                var products = await _context.Products.Include(p => p.Category).ToListAsync();
+                decimal searchword = 0;
+                if (decimal.TryParse(word, NumberStyles.Any, CultureInfo.InvariantCulture, out searchword))
+                {
+                    filteredProducts = from p in products where p.SerialNumber == decimal.ToInt32(searchword) select p;
+                    filteredProducts = filteredProducts.Union(from p in products where p.Price == searchword select p);
+                    filteredProducts = filteredProducts.Union(from p in products where p.ReleaseYear == decimal.ToInt32(searchword) select p);
+                    filteredProducts = filteredProducts.Union(from p in products where p.Brand == searchword.ToString() select p);
+                    filteredProducts = filteredProducts.Union(from p in products where p.Model == searchword.ToString() select p);
+                }
+                else
+                {
+                    filteredProducts = from p in products where p.Brand == word select p;
+                    filteredProducts = filteredProducts.Union(from p in products where p.Model == word select p);
+                    var catId = await _context.Categories.SingleOrDefaultAsync(m => m.CategoryName == word);
+                    if (catId != null)
+                    {
+                        filteredProducts = filteredProducts.Union(from p in products where p.CategoryId == catId.CategoryId select p);
+                    }
+                    filteredProducts = filteredProducts.Union(from p in products where p.Model == word select p);
+                }
+            }
+
+            return PartialView(filteredProducts);
         }
     }
 }

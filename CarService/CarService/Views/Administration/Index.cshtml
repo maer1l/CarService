@@ -1,0 +1,35 @@
+﻿@model CarService.ViewModels.AdministrationViewModel
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+            <th>Firsname</th>
+            <th>Lastname</th>
+            <th>Age</th>
+            <th>DocumentId</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.users)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Email</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Age</td>
+                <td>@user.DocumentId</td>
+                <td>@Model.userRoles[user.Id]</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Administration", new { @id = user.Id }, null)<br>
+                    @Html.ActionLink("Delete", "Delete", "Administration", new { @id = user.Id }, null)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button type="submit" class="btn btn-primary" onclick="@("window.location.href='" + @Url.Action("Create", "Administration") + "'");">Создать пользователя</button>

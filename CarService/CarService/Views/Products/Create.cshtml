@@ -15,7 +15,7 @@
 
         <div class="form-group">
             @Html.LabelFor(m => m.CategoryId)
-            @Html.DropDownListFor(m => m.CategoryId, (SelectList)ViewBag.CategoryId, "Select category", new { @class = "form-control", id="categoryId" })
+            @Html.DropDownListFor(m => m.CategoryId, (SelectList)ViewBag.CategoryId, "Выбор категории", new { @class = "form-control", id="categoryId" })
             @Html.ValidationMessageFor(m => m.CategoryId)
         </div>
 

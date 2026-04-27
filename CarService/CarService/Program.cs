@@ -17,7 +17,7 @@ namespace CarService
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -86,6 +86,25 @@ namespace CarService
 
             var app = builder.Build();
 
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            //    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            //    if (!await roleManager.RoleExistsAsync("Admin"))
+            //        await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+            //    if (!await roleManager.RoleExistsAsync("Master"))
+            //        await roleManager.CreateAsync(new IdentityRole("Master"));
+
+            //    if (!await roleManager.RoleExistsAsync("User"))
+            //        await roleManager.CreateAsync(new IdentityRole("User"));
+
+            //    var adminEmail = "firstuser@mail.com";
+            //    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            //    await userManager.AddToRoleAsync(adminUser, "Admin");
+            //}
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -97,8 +116,8 @@ namespace CarService
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapRazorPages();
 
