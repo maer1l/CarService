@@ -140,6 +140,7 @@ namespace CarService.Areas.Identity.Pages.Account
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.AddToRoleAsync(user, "User");
 
                 if (result.Succeeded)
                 {

@@ -1,8 +1,10 @@
 ﻿using CarService.Areas.Identity.Data;
+using CarService.Models;
 using CarService.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CarService.Controllers
 {
@@ -67,6 +69,102 @@ namespace CarService.Controllers
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, model.RoleName);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Edit(string userid)
+        {
+            if (!userid.IsNullOrEmpty())
+            {
+                ApplicationUser AppUser = await _userManager.FindByIdAsync(userid);
+                if(AppUser != null)
+                {
+                    var viewModel = new ApplicationUserViewModel
+                    {
+                        Roles = _roleManager.Roles.ToList(),
+                        user = AppUser
+                    };
+                    return View(viewModel);
+                }
+                return NotFound();
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(ApplicationUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ApplicationUser user = await _userManager.FindByIdAsync(model.user.Id);
+                    user.Email = model.user.Email;
+                    user.UserName = model.user.Email;
+                    user.FirstName = model.user.FirstName;
+                    user.LastName = model.user.LastName;
+                    user.Age = model.user.Age;
+                    user.DocumentId = model.user.DocumentId;
+
+                    var res = await _userManager.UpdateAsync(user);
+                    if (res.Succeeded)
+                    {
+                        var roles = await _userManager.GetRolesAsync(user);
+                        if (roles.Count > 0)
+                        {
+                            await _userManager.RemoveFromRoleAsync(user, roles[0]);
+                            await _userManager.AddToRoleAsync(user, model.RoleName);
+                        }
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return NotFound();
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return NotFound();
+        }
+
+        [HttpGet, ActionName("Delete")]
+        public async Task<ActionResult> DeleteConfirmed(string id)
+        {
+            if (id.IsNullOrEmpty())
+            {
+                return new NotFoundResult();
+            }
+
+            // Удаление пользователя
+            var user = await _userManager.FindByIdAsync(id);
+            var logins = await _userManager.GetLoginsAsync(user);
+            var rolesForUser = await _userManager.GetRolesAsync(user);
+
+            // Открытие транзакции для комплексного удаления
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                // Удалить логин пользователя
+                foreach (var login in logins.ToList())
+                {
+                    await _userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
+                }
+
+                // Удалить пользователя из ролей
+                if (rolesForUser.Count() > 0)
+                {
+                    foreach (var item in rolesForUser.ToList())
+                    {
+                        // item should be the name of the role
+                        var result = await _userManager.RemoveFromRoleAsync(user, item);
+                    }
+                }
+
+                // Удаление пользователя
+                await _userManager.DeleteAsync(user);
+
+                // Фиксация транзакции удаления
+                transaction.Commit();
             }
 
             return RedirectToAction("Index");

@@ -24,7 +24,7 @@
                 <td>@user.DocumentId</td>
                 <td>@Model.userRoles[user.Id]</td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "Administration", new { @id = user.Id }, null)<br>
+                    @Html.ActionLink("Edit", "Edit", "Administration", new { @userid = user.Id }, null)<br>
                     @Html.ActionLink("Delete", "Delete", "Administration", new { @id = user.Id }, null)
                 </td>
             </tr>
