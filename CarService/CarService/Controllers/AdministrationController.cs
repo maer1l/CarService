@@ -1,6 +1,7 @@
 ﻿using CarService.Areas.Identity.Data;
 using CarService.Models;
 using CarService.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace CarService.Controllers
             _roleManager = roleManager;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             Dictionary<string, string> _userRoles = new Dictionary<string, string>();
@@ -41,6 +43,7 @@ namespace CarService.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var viewModel = new ApplicationUserViewModel
@@ -74,6 +77,7 @@ namespace CarService.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string userid)
         {
             if (!userid.IsNullOrEmpty())
@@ -129,6 +133,7 @@ namespace CarService.Controllers
         }
 
         [HttpGet, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
             if (id.IsNullOrEmpty())

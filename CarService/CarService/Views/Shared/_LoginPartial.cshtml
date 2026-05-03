@@ -19,10 +19,41 @@
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <div class="nav-link text-dark" onclick="oncl()">Login</div>
     </li>
 }
 </ul>
+
+<dialog id="login" onclick="isClose(event)">
+    <div style="display:flex;flex-direction:column; gap: 5px; justify-content: center; align-items: center;">
+        <h2 id="bigText">logIn</h2>
+        <form asp-area="Identity" asp-page="/Account/Login">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input name="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" name="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+            </div>
+            <div>
+                <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+            </div>
+        </form>
+        <a asp-area="Identity" asp-page="/Account/Register">haven`t account? Register</a>
+    </div>
+</dialog>
+
+<script>
+    function oncl(){
+        let dialog = document.getElementById('login');
+        dialog.showModal();
+    }
+
+    function isClose(event){
+        let d = document.getElementById('login');
+        let dialog = d.getBoundingClientRect();
+        let inside = event.clientX >= dialog.left && event.clientX <= dialog.right && event.clientY <= dialog.bottom && event.clientY >= dialog.top;
+        if(!inside) d.close();
+    }
+</script>

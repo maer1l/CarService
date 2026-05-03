@@ -1,5 +1,6 @@
 ﻿using CarService.Data;
 using CarService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,7 @@ namespace CarService.Controllers
         }
 
         // GET: Products/Create
+        [Authorize(Roles = "Admin,Master")]
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName"); // второй параметр это отображаемое значение
@@ -73,6 +75,7 @@ namespace CarService.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize(Roles = "Admin,Master")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -132,6 +135,7 @@ namespace CarService.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize(Roles = "Admin,Master")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
