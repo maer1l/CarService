@@ -8,12 +8,44 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CarService.styles.css" asp-append-version="true" />
+    <style>
+            body {
+                background-color: #f8f9fa;
+            }
+
+            .navbar {
+                box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            }
+
+            .navbar-brand {
+                font-weight: 500;
+                font-size: 1.1rem;
+                letter-spacing: 0.01em;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+            }
+
+            .container > main {
+                background: #fff;
+                border-radius: 10px;
+                padding: 1.75rem 2rem;
+                margin-top: 0.5rem;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            }
+
+            .footer {
+                font-size: 0.85rem;
+                margin-top: 2rem;
+            }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CarService</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">🔧 CarService</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,16 +56,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Products</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -48,7 +74,7 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
+        <div class="container py-2">
             &copy; 2026 - CarService - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>

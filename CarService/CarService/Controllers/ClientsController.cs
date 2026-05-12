@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CarService.Data;
 using CarService.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CarService.Controllers
 {
@@ -152,6 +153,34 @@ namespace CarService.Controllers
         private bool ClientExists(int id)
         {
             return _context.Clients.Any(e => e.ClientId == id);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SearchClient(string word)
+        {
+            IEnumerable<Client> filteredclients = null;
+            if (!word.IsNullOrEmpty())
+            {
+                word = word.Trim();
+                decimal d = 0;
+                DateOnly date = new DateOnly();
+                if (decimal.TryParse(word, out d))
+                {
+                    filteredclients = from p in _context.Clients where p.DocumentId == d select p;
+                }
+                else if (DateOnly.TryParse(word, out date))
+                {
+                    filteredclients = from p in _context.Clients where p.Birthdate == date select p;
+                }
+                else
+                {
+                    filteredclients = from p in _context.Clients where p.Name == word select p;
+                    filteredclients = filteredclients.Union(from p in _context.Clients where p.Address == word select p);
+                    filteredclients = filteredclients.Union(from p in _context.Clients where p.Phone == word select p);
+                }
+            }
+
+            return PartialView(filteredclients);
         }
     }
 }

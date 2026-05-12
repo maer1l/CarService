@@ -4,65 +4,71 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Создание товара</h4>
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">← Назад</a>
+</div>
 
-<h4>Product</h4>
-<hr />
-<div class="row">
-    @using (Html.BeginForm("Create", "Products", FormMethod.Post, new { id = "productForm" }))
+<div style="border:1px solid #dee2e6; border-radius:8px; overflow:hidden; max-width:520px;">
+    @using (Html.BeginForm("Create", "Products", FormMethod.Post, new { id = "productForm", @class = "p-3" }))
     {
-        @Html.ValidationSummary(false, "Please fix the following errors!")
+        @Html.ValidationSummary(false, "", new { @class = "text-danger small mb-2" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.CategoryId)
-            @Html.DropDownListFor(m => m.CategoryId, (SelectList)ViewBag.CategoryId, "Выбор категории", new { @class = "form-control", id="categoryId" })
-            @Html.ValidationMessageFor(m => m.CategoryId)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.SerialNumber)
-            @Html.TextBoxFor(m => m.SerialNumber, new { @class = "form-control", id = "serialNumber", placeholder = "111111" })
-            @Html.ValidationMessageFor(m => m.SerialNumber)
+        <div class="mb-3">
+            @Html.LabelFor(m => m.CategoryId, new { @class = "form-label small text-muted" })
+            @Html.DropDownListFor(m => m.CategoryId, (SelectList)ViewBag.CategoryId, "Выбор категории", new { @class = "form-select form-select-sm", id = "categoryId" })
+            @Html.ValidationMessageFor(m => m.CategoryId, "", new { @class = "text-danger small" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Price)
-            @Html.TextBoxFor(m => m.Price, new { @class = "form-control", id = "price", placeholder = "2707.0" })
-            @Html.ValidationMessageFor(m => m.Price)
+        <div class="mb-3">
+            @Html.LabelFor(m => m.SerialNumber, new { @class = "form-label small text-muted" })
+            @Html.TextBoxFor(m => m.SerialNumber, new { @class = "form-control form-control-sm", id = "serialNumber", placeholder = "111111" })
+            @Html.ValidationMessageFor(m => m.SerialNumber, "", new { @class = "text-danger small" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.ReleaseYear)
-            @Html.TextBoxFor(m => m.ReleaseYear, new { @class = "form-control", id = "releaseYear", placeholder = "1997" })
-            @Html.ValidationMessageFor(m => m.ReleaseYear)
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Price, new { @class = "form-label small text-muted" })
+            @Html.TextBoxFor(m => m.Price, new { @class = "form-control form-control-sm", id = "price", placeholder = "2707.0" })
+            @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger small" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Brand)
-            @Html.TextBoxFor(m => m.Brand, new { @class = "form-control", id = "brand", placeholder = "Michelin" })
-            @Html.ValidationMessageFor(m => m.Brand)
+        <div class="mb-3">
+            @Html.LabelFor(m => m.ReleaseYear, new { @class = "form-label small text-muted" })
+            @Html.TextBoxFor(m => m.ReleaseYear, new { @class = "form-control form-control-sm", id = "releaseYear", placeholder = "1997" })
+            @Html.ValidationMessageFor(m => m.ReleaseYear, "", new { @class = "text-danger small" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Model)
-            @Html.TextBoxFor(m => m.Model, new { @class = "form-control", id = "model", placeholder = "Pilot Sport" })
-            @Html.ValidationMessageFor(m => m.Model)
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Brand, new { @class = "form-label small text-muted" })
+            @Html.TextBoxFor(m => m.Brand, new { @class = "form-control form-control-sm", id = "brand", placeholder = "Michelin" })
+            @Html.ValidationMessageFor(m => m.Brand, "", new { @class = "text-danger small" })
         </div>
 
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" id="create"/>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Model, new { @class = "form-label small text-muted" })
+            @Html.TextBoxFor(m => m.Model, new { @class = "form-control form-control-sm", id = "model", placeholder = "Pilot Sport" })
+            @Html.ValidationMessageFor(m => m.Model, "", new { @class = "text-danger small" })
         </div>
-        <div>
-            <a asp-action="Index">Back to List</a>
-        </div>
+
+        <input type="submit" value="Создать" class="btn btn-sm btn-dark" id="create" />
     }
 </div>
 
 <script>
     $('#create').click(function (e) {
+
         e.preventDefault();
 
-        let jsonData = JSON.stringify({'categoryId': $('#categoryId').val(), 'serialNumber': $('#serialNumber').val(), 'price': $('#price').val().replace(',','.'), 'releaseYear': $('#releaseYear').val(), 'brand': $('#brand').val(), 'model': $('#model').val()});
+        $('.field-validation-error').text('');
+
+        let jsonData = JSON.stringify({
+            'categoryId': $('#categoryId').val(),
+            'serialNumber': $('#serialNumber').val(),
+            'price': $('#price').val().replace(',', '.'),
+            'releaseYear': $('#releaseYear').val(),
+            'brand': $('#brand').val(),
+            'model': $('#model').val()
+        });
 
         $.ajax({
             url: '/Products/ValidateProduct',
@@ -72,22 +78,33 @@
             cache: false,
             processData: false,
             data: jsonData,
+
             success: function (data) {
-                if(data.success == true){ $('#productForm').submit(); }
-                else{
+
+                if (data.success == true) {
+                    $('#productForm').submit();
+                }
+                else {
+
                     let errors = data.errors;
-                    for(let key in errors){
-                        let span = $(`[data-valmsg-for="${key}"]`)
+
+                    for (let key in errors) {
+
+                        let span = $(`[data-valmsg-for="${key}"]`);
+
                         span.text(errors[key]);
                     }
                 }
             }
-        })
+        });
     });
 </script>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
 }

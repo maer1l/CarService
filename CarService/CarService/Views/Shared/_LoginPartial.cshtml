@@ -5,47 +5,54 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <div class="nav-link text-dark" onclick="oncl()">Login</div>
-    </li>
-}
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item d-flex align-items-center">
+            <a id="manage" class="nav-link text-dark fw-500 me-1" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                👤 @UserManager.GetUserName(User)
+            </a>
+        </li>
+        <li class="nav-item d-flex align-items-center">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button id="logout" type="submit" class="btn btn-sm btn-outline-secondary">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item d-flex align-items-center">
+            <button class="btn btn-sm btn-outline-secondary" onclick="oncl()">Войти</button>
+        </li>
+    }
 </ul>
 
-<dialog id="login" onclick="isClose(event)">
-    <div style="display:flex;flex-direction:column; gap: 5px; justify-content: center; align-items: center;">
-        <h2 id="bigText">logIn</h2>
+<dialog id="login" onclick="isClose(event)" style="border:none; border-radius:12px; padding:0; box-shadow:0 8px 32px rgba(0,0,0,0.15); width:360px;">
+    <div class="p-4">
+        <div class="text-center mb-4">
+            <h5 class="mb-0 fw-500">Вход в систему</h5>
+            <p class="text-muted small mb-0 mt-1">CarService</p>
+        </div>
         <form asp-area="Identity" asp-page="/Account/Login">
             @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input name="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3" role="alert"></div>
+            <div class="mb-3">
+                <label class="form-label small text-muted">Email</label>
+                <input name="Input.Email" class="form-control form-control-sm" autocomplete="username" aria-required="true" placeholder="name@example.com" />
             </div>
-            <div class="form-floating mb-3">
-                <input type="password" name="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+            <div class="mb-4">
+                <label class="form-label small text-muted">Пароль</label>
+                <input type="password" name="Input.Password" class="form-control form-control-sm" autocomplete="current-password" aria-required="true" placeholder="••••••••" />
             </div>
-            <div>
-                <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-            </div>
+            <button id="login-submit" type="submit" class="w-100 btn btn-sm btn-dark">Войти</button>
         </form>
-        <a asp-area="Identity" asp-page="/Account/Register">haven`t account? Register</a>
+        <div class="text-center mt-3">
+            <a asp-area="Identity" asp-page="/Account/Register" class="small text-muted">Нет аккаунта? Зарегистрироваться</a>
+        </div>
     </div>
 </dialog>
 
 <script>
-    function oncl(){
+    const oncl = () => {
         let dialog = document.getElementById('login');
         dialog.showModal();
     }

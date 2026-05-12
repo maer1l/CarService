@@ -146,30 +146,39 @@ namespace CarService.Controllers
             var logins = await _userManager.GetLoginsAsync(user);
             var rolesForUser = await _userManager.GetRolesAsync(user);
 
-            // Открытие транзакции для комплексного удаления
-            using (var transaction = _context.Database.BeginTransaction())
+            if (rolesForUser.Contains("User"))
             {
-                // Удалить логин пользователя
-                foreach (var login in logins.ToList())
+                // Открытие транзакции для комплексного удаления
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    await _userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
-                }
-
-                // Удалить пользователя из ролей
-                if (rolesForUser.Count() > 0)
-                {
-                    foreach (var item in rolesForUser.ToList())
+                    // Удалить логин пользователя
+                    foreach (var login in logins.ToList())
                     {
-                        // item should be the name of the role
-                        var result = await _userManager.RemoveFromRoleAsync(user, item);
+                        await _userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
                     }
+
+                    // Удалить пользователя из ролей
+                    if (rolesForUser.Count() > 0)
+                    {
+                        foreach (var item in rolesForUser.ToList())
+                        {
+                            // item should be the name of the role
+                            var result = await _userManager.RemoveFromRoleAsync(user, item);
+                        }
+                    }
+
+                    // Удаление пользователя
+                    await _userManager.DeleteAsync(user);
+
+                    // Фиксация транзакции удаления
+                    transaction.Commit();
                 }
-
-                // Удаление пользователя
-                await _userManager.DeleteAsync(user);
-
-                // Фиксация транзакции удаления
-                transaction.Commit();
+            }
+            else
+            {
+                user.LockoutEnabled = true;
+                user.LockoutEnd = DateTimeOffset.MaxValue;
+                await _userManager.UpdateAsync(user);
             }
 
             return RedirectToAction("Index");

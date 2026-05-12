@@ -4,50 +4,64 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Client</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="DocumentId" class="control-label"></label>
-                <input asp-for="DocumentId" class="form-control" />
-                <span asp-validation-for="DocumentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Birthdate" class="control-label"></label>
-                <input asp-for="Birthdate" class="form-control" />
-                <span asp-validation-for="Birthdate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Создание клиента</h4>
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">← Назад</a>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div style="border:1px solid #dee2e6; border-radius:8px; overflow:hidden; max-width:520px;">
+    <form asp-action="Create" class="p-3">
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger small mb-2">
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DocumentId" class="form-label small text-muted"></label>
+
+            <input asp-for="DocumentId" class="form-control form-control-sm" />
+
+            <span asp-validation-for="DocumentId" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label small text-muted"></label>
+
+            <input asp-for="Name" class="form-control form-control-sm" />
+
+            <span asp-validation-for="Name" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label small text-muted"></label>
+
+            <input asp-for="Address" class="form-control form-control-sm" />
+
+            <span asp-validation-for="Address" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Phone" class="form-label small text-muted"></label>
+
+            <input asp-for="Phone" class="form-control form-control-sm" />
+
+            <span asp-validation-for="Phone" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Birthdate" class="form-label small text-muted"></label>
+
+            <input asp-for="Birthdate" class="form-control form-control-sm" />
+
+            <span asp-validation-for="Birthdate" class="text-danger small"></span>
+        </div>
+
+        <input type="submit" value="Создать" class="btn btn-sm btn-dark" />
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

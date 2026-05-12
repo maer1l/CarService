@@ -1,44 +1,46 @@
 ﻿@model IEnumerable<CarService.Models.Category>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Категории";
 }
 
-<h1>Index</h1>
-
-<form data-ajax="true" data-ajax-method="post" data-ajax-url="/Categories/SearchCategory" data-ajax-update="#results">
-    <div style="display:flex; flex-direction: row; gap: 10px;">
-        <input type="text" name="word" placeholder="Поиск..." />
-        <button type="submit" class="btn btn-primary">🔍</button>
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h1 class="h4 mb-0">Категории</h1>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+        <a asp-action="Create" class="btn btn-sm btn-outline-secondary">+ Создать</a>
+        <form data-ajax="true" data-ajax-method="post" data-ajax-url="/Categories/SearchCategory" data-ajax-update="#results">
+            <div class="d-flex gap-2">
+                <input type="text" name="word" placeholder="Поиск..." class="form-control form-control-sm" style="width:220px;" />
+                <button type="submit" class="btn btn-sm btn-outline-secondary">🔍</button>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <div id="results">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.CategoryName)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-    @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CategoryName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
-                </td>
-            </tr>
-    }
-        </tbody>
-    </table>
+    <div style="border:1px solid #dee2e6; border-radius:8px; overflow:hidden;">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.CategoryName)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@Html.DisplayFor(modelItem => item.CategoryName)</strong></td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-info">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
